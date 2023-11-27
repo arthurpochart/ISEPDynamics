@@ -1,6 +1,6 @@
 from ev3dev2.motor import MediumMotor, OUTPUT_C, OUTPUT_A, OUTPUT_B
 from time import sleep
-from pynput import keyboard
+from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 
 print("System control: ")
 print("Press 1 to start")
