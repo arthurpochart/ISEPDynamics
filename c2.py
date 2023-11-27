@@ -22,15 +22,15 @@ while escape==False:
     direction = input("1.Right 2.Left 3.Open 4.Close")
     
     if direction=='1':
-            drive.turn_right(driveSpeed,90)
+        drive.turn_right(driveSpeed,90)
     else if direction=='2':
-             drive.turn_left(driveSpeed,90)
+        drive.turn_left(driveSpeed,90)
     else if direction=='3':
-             open_claw()
+        open_claw()
     else if direction=='4':
-             close_claw()
+        close_claw()
     else:
-            print("Exiting")
-            escape==True
+        print("Exiting")
+        escape==True
 
 
