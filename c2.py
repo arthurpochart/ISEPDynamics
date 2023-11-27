@@ -21,16 +21,15 @@ escape = False
 while escape==False:
     direction = input("1.Right 2.Left 3.Open 4.Close")
     
-    match direction:
-        case '1':
+    if direction=='1':
             drive.turn_right(driveSpeed,90)
-        case '2'
+    else if direction=='2':
              drive.turn_left(driveSpeed,90)
-        case '3':
+    else if direction=='3':
              open_claw()
-        case '4':
+    else if direction=='4':
              close_claw()
-        case _:
+    else:
             print("Exiting")
             escape==True
 
