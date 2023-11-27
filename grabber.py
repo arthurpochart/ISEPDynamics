@@ -6,11 +6,13 @@ claw = MediumMotor(OUTPUT_C)
 myspeed = 50
 
 def open_claw():
-    claw.on_for_degrees(speed=myspeed,degrees=30)
+    claw.on_for_degrees(speed=myspeed,degrees=50)
 
 def close_claw():
-    claw.on_for_degrees(speed=-myspeed,degrees=30)
+    claw.on_for_degrees(speed=-myspeed,degrees=50)
 
 close_claw()
+print("Closing")
 sleep(1)
+print("Opening")
 open_claw()
