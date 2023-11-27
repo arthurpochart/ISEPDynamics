@@ -23,11 +23,11 @@ while escape==False:
     
     if direction=='1':
         drive.turn_right(driveSpeed,90)
-    else if direction=='2':
+    elif direction=='2':
         drive.turn_left(driveSpeed,90)
-    else if direction=='3':
+    elif direction=='3':
         open_claw()
-    else if direction=='4':
+    elif direction=='4':
         close_claw()
     else:
         print("Exiting")
