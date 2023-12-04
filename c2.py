@@ -33,7 +33,7 @@ def snakeTest():
             leds.set_color("LEFT", "RED")
             leds.set_color("RIGHT", "RED")
         
-        while not onBorder: 
+        if not onBorder: 
             #drive.on_for_seconds(driveSpeed,driveSpeed,2)
             drive.on(driveSpeed,driveSpeed)
             
