@@ -11,6 +11,7 @@ print("Press 1 to start")
 drive = MoveTank(OUTPUT_A, OUTPUT_B)
 grabber = MediumMotor(OUTPUT_C)
 colorSensor = ColorSensor()
+leds = Leds()
 
 grabberSpeed = 50
 driveSpeed=50
