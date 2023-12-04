@@ -28,7 +28,7 @@ def snakeTest():
         color = colorSensor.color
         print(color)
         sleep(0.5)
-        drive.on_for_seconds(driveSpeed,driveSpeed,0.5)
+        drive.on_for_seconds(driveSpeed,driveSpeed,2)
         if color != 0:
             onBorder = True
             leds.set_color("LEFT", "RED")
