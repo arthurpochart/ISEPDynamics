@@ -25,16 +25,17 @@ def close_claw():
 
 def snakeTest():
     onBorder = False
-    while not onBorder:
+    while True:
         color = colorSensor.color
         print(color)
-        sleep(0.5)
-        drive.on_for_seconds(driveSpeed,driveSpeed,2)
         if color != 0:
             onBorder = True
             leds.set_color("LEFT", "RED")
             leds.set_color("RIGHT", "RED")
 
+        while not onBorder: 
+            drive.on_for_seconds(driveSpeed,driveSpeed,2)
+            
 
 escape = False
 while escape==False:
