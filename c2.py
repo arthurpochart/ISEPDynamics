@@ -34,6 +34,8 @@ def snakeTest():
             onBorder = True
             leds.set_color("LEFT", "RED")
             leds.set_color("RIGHT", "RED")
+            drive.turn_left(driveSpeed,90)
+            drive.turn_left(driveSpeed,90)
 
 
 escape = False
