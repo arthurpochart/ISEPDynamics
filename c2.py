@@ -14,7 +14,6 @@ colorSensor = ColorSensor()
 
 grabberSpeed = 50
 driveSpeed=50
-onBorder=False
 
 def open_claw():
     grabber.on_for_degrees(speed=grabberSpeed,degrees=360*3)
@@ -24,6 +23,7 @@ def close_claw():
 
 
 def snakeTest():
+    onBorder = False
     while not onBorder:
         color = colorSensor.color
         print(color)
