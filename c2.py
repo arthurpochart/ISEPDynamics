@@ -3,6 +3,7 @@ from time import sleep
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor.lego import ColorSensor
 from ev3dev2.sensor import INPUT_1
+from ev3dev2.led import Leds
 
 print("System control: ")
 print("Press 1 to start")
@@ -26,6 +27,12 @@ def snakeTest():
     while not onBorder:
         color = colorSensor.color
         print(color)
+        sleep(0.5)
+        driver.on_for_seconds('0.5')
+        if color != 0:
+            onBorder = True
+            leds.set_color("LEFT", "RED")
+            leds.set_color("RIGHT", "RED")
 
 
 escape = False
