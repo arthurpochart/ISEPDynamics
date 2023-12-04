@@ -35,7 +35,7 @@ def snakeTest():
         
         while not onBorder: 
             #drive.on_for_seconds(driveSpeed,driveSpeed,2)
-            drive.on()
+            drive.on(driveSpeed,driveSpeed)
             
 
 escape = False
