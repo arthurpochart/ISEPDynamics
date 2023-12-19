@@ -35,7 +35,7 @@ onBorder = False
 right = True
 chill = False
 
-calibrationrot = 80
+calibrationrot = 83
 mdiff = MoveDifferential(OUTPUT_A,OUTPUT_B,wheel,calibrationrot)
 mdiff.gyro = GyroSensor()
 mdiff.gyro.calibrate()
