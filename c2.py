@@ -34,6 +34,8 @@ wheel = Wheel(56.0,28)
 onBorder = False
 right = True
 chill = False
+Delta = 0
+nb_Turns = 9
 
 calibrationrot = 83
 mdiff = MoveDifferential(OUTPUT_A,OUTPUT_B,wheel,calibrationrot)
@@ -77,6 +79,24 @@ def turn_around_l():
     drive.turn_left(driveSpeed,90-5)
     driveFor(5)
 
+def turn_around_r_diff():
+    global y
+    global x
+    global Delta
+    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
+    x = 1000-Delta
+    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
+    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
+    y = 1000-Delta
+    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
+    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
+    x = 0 + Delta
+    Delta+=80
+    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
+    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
+    y = 0 + Delta
+    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
+
 def expanding_square():
     global onBorder
     global right
@@ -94,8 +114,20 @@ def expanding_square():
             mdiff.odometry_stop()
             mdiff.on_to_coordinates(driveSpeed,5,0)
             close_claw()
+        
         if onBorder == True:
             mdiff.odometry_stop()
+            i = 0 
+            for i in range(nb_Turns):
+                turn_around_r_diff()
+                right = False
+        else
+            continue
+                
+
+
+
+
 
 
 
