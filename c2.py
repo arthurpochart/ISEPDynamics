@@ -77,6 +77,28 @@ def turn_around_l():
     drive.turn_left(driveSpeed,90-5)
     driveFor(5)
 
+def expanding_square():
+    global onBorder
+    global right
+    global x
+    global y
+    while True:
+        mdiff.gyro.calibrate()
+        mdiff.odometry_start(theta_degrees_start=0)
+        print('x:'+str(x)+' y:' +str(y))
+        dist = us.distance_centimeters
+        print('dist:'+str(dist))
+        os.system('clear')
+        mdiff.on_to_coordinates(driveSpeed,1000,0)
+        if dist < 10:
+            mdiff.odometry_stop()
+            mdiff.on_to_coordinates(driveSpeed,5,0)
+            close_claw()
+        if onBorder == True:
+            mdiff.odometry_stop()
+
+
+
 def snek():
     global onBorder
     global right
@@ -120,6 +142,7 @@ def rando():
     mdiff.turn_to_angle(driveSpeed,180,use_gyro=True)
     mdiff.turn_to_angle(driveSpeed,270,use_gyro=True)
     mdiff.turn_to_angle(driveSpeed,360,use_gyro=True)
+
 def menu():
     escape = False
     while escape==False:
