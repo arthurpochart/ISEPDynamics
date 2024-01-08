@@ -34,7 +34,7 @@ wheel = Wheel(56.0,28)
 onBorder = False
 right = True
 chill = False
-Delta = 0
+delta = 0
 nb_Turns = 9
 
 calibrationrot = 83
@@ -79,56 +79,19 @@ def turn_around_l():
     drive.turn_left(driveSpeed,90-5)
     driveFor(5)
 
-def turn_around_r_diff():
-    global y
-    global x
-    global Delta
-    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
-    x = 1000-Delta
-    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
-    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
-    y = 1000-Delta
-    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
-    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
-    x = 0 + Delta
-    Delta+=80
-    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
-    mdiff.on_to_coordinates(driveSpeed,1000-Delta,0)
-    y = 0 + Delta
-    mdiff.turn_to_angle(driveSpeed,calibrationrot,use_gyro=True)
+
 
 def expanding_square():
     global onBorder
     global right
     global x
-    global y
-    while True:
-        mdiff.gyro.calibrate()
-        mdiff.odometry_start(theta_degrees_start=0)
-        print('x:'+str(x)+' y:' +str(y))
-        dist = us.distance_centimeters
-        print('dist:'+str(dist))
-        os.system('clear')
-        mdiff.on_to_coordinates(driveSpeed,1000,0)
-        if dist < 10:
-            mdiff.odometry_stop()
-            mdiff.on_to_coordinates(driveSpeed,5,0)
-            close_claw()
-        
-        if onBorder == True:
-            mdiff.odometry_stop()
-            i = 0 
-            for i in range(nb_Turns):
-                turn_around_r_diff()
-                right = False
-        else
-            continue
-                
-
-
-
-
-
+    mdiff.gyro.calibrate()
+    mdiff.odometry_start(90, 0, 0, 0.005)
+    xList = [0, 1500, 1500, 0, 0, 1200, 1200, 300, 300]
+    yList = [0, 0, 1500, 1500, 300, 300, 1200, 1200, 600]
+    for i in range(len(xList)):
+        mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
+        sleep(1)
 
 
 def snek():
