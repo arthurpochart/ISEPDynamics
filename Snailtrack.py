@@ -195,4 +195,64 @@ def snek():
                 turn_around_r()
                 chill = True
                 right = False
-           
+            else:
+                x = 0
+                chill = True
+                right = True
+            onBorder = False
+        else:
+            continue
+
+def rando():
+    global onBorder
+    global right
+    global x
+    mdiff.gyro.calibrate()
+    mdiff.odometry_start(theta_degrees_start=0)
+
+    mdiff.on_to_coordinates(driveSpeed, 1000, 0)
+
+    mdiff.turn_to_angle(driveSpeed, 0, use_gyro=True)
+    mdiff.turn_to_angle(driveSpeed, 90, use_gyro=True)
+    mdiff.turn_to_angle(driveSpeed, 180, use_gyro=True)
+    mdiff.turn_to_angle(driveSpeed, 270, use_gyro=True)
+    mdiff.turn_to_angle(driveSpeed, 360, use_gyro=True)
+
+def menu():
+    escape = False
+    while escape == False:
+        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test\n")
+        if direction == '1':
+            deg = input('Degrees:\n')
+            drive.turn_right(driveSpeed, float(deg))
+        elif direction == '2':
+            deg = input('Degrees\n')
+            drive.turn_left(driveSpeed, float(deg))
+        elif direction == '3':
+            open_claw()
+        elif direction == '4':
+            close_claw()
+        elif direction == '5':
+            p1 = Thread(target=checkBorder)
+            p2 = Thread(target=rando)
+            p3 = Thread(target=expanding_square_with_snail)
+            p4 = Thread(target=snek)
+            p1.start()
+            p2.start()
+            p3.start()
+            p4.start()
+        elif direction == '6':
+            try:
+                dist = input("\n")
+                driveFor(float(dist))
+            except KeyboardInterrupt:
+                menu()
+        else:
+            print("Exiting")
+            escape == True
+
+if __name__ == '__main__':
+    try:
+        menu()
+    except KeyboardInterrupt:
+        print('Exiting\n')
