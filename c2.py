@@ -93,14 +93,14 @@ def expanding_square():
         mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
         sleep(1)
 
-def vector():
+def sector():
     global onBorder
     global right
     global x
     mdiff.gyro.calibrate()
     mdiff.odometry_start(90, 0, 0, 0.005)
-    xList = []
-    yList = []
+    xList = [0, 1200, 750, 600, 0, 1500, 1200, 600, 0, 750, 900, 1500, 900, 300]
+    yList = [0, 1200, 1500, 0, 600, 750, 0, 1500, 900, 750, 1500, 900, 0, 750]
     for i in range(len(xList)):
         mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
         sleep(1)
@@ -164,7 +164,7 @@ def rando():
 def menu():
     escape = False
     while escape==False:
-        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test 6.Expanding_square 7.Vector 8.Go_home\n")
+        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test 6.Expanding_square 7.Sector 8.Go_home\n")
         if direction=='1':
             deg = input('Degrees:\n')
             drive.turn_right(driveSpeed,float(deg))
@@ -187,7 +187,7 @@ def menu():
             p2.start()
         elif direction=='7':
             p1=Thread(target=checkBorder)
-            p2=Thread(target=vector)
+            p2=Thread(target=sector)
             p1.start()
             p2.start()
         elif direction=='8':
