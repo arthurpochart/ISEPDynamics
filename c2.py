@@ -87,8 +87,33 @@ def expanding_square():
     global x
     mdiff.gyro.calibrate()
     mdiff.odometry_start(90, 0, 0, 0.005)
-    xList = [0, 1500, 1500, 0, 0, 1200, 1200, 300, 300]
-    yList = [0, 0, 1500, 1500, 300, 300, 1200, 1200, 600]
+    xList = [0, 1500, 1500, 0, 0, 1200, 1200, 300, 300, 900, 900, 600, 600, 750, 750, 600]
+    yList = [0, 0, 1500, 1500, 300, 300, 1200, 1200, 600, 600, 900, 900, 600, 600, 750, 750]
+    for i in range(len(xList)):
+        mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
+        sleep(1)
+
+def vector():
+    global onBorder
+    global right
+    global x
+    mdiff.gyro.calibrate()
+    mdiff.odometry_start(90, 0, 0, 0.005)
+    xList = []
+    yList = []
+    for i in range(len(xList)):
+        mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
+        sleep(1)
+
+
+def go_home():
+    global onBorder
+    global right
+    global x
+    mdiff.gyro.calibrate()
+    mdiff.odometry_start(90, 0, 0, 0.005)
+    xList = [0]
+    yList = [0]
     for i in range(len(xList)):
         mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
         sleep(1)
@@ -129,9 +154,7 @@ def rando():
     global x
     mdiff.gyro.calibrate()
     mdiff.odometry_start(theta_degrees_start=0)
-
     mdiff.on_to_coordinates(driveSpeed,1000,0)
-
     mdiff.turn_to_angle(driveSpeed,0,use_gyro=True)
     mdiff.turn_to_angle(driveSpeed,90,use_gyro=True)
     mdiff.turn_to_angle(driveSpeed,180,use_gyro=True)
@@ -141,7 +164,7 @@ def rando():
 def menu():
     escape = False
     while escape==False:
-        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test\n")
+        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test 6.Expanding_square 7.Vector 8.Go_home\n")
         if direction=='1':
             deg = input('Degrees:\n')
             drive.turn_right(driveSpeed,float(deg))
@@ -157,7 +180,22 @@ def menu():
             p2=Thread(target=rando)
             p1.start()
             p2.start()
-        elif direction == '6':
+        elif direction=='6':
+            p1=Thread(target=checkBorder)
+            p2=Thread(target=expanding_square)
+            p1.start()
+            p2.start()
+        elif direction=='7':
+            p1=Thread(target=checkBorder)
+            p2=Thread(target=vector)
+            p1.start()
+            p2.start()
+        elif direction=='8':
+            p1=Thread(target=checkBorder)
+            p2=Thread(target=go_home)
+            p1.start()
+            p2.start()    
+        elif direction == '9':
             try:
                 dist = input("\n")
                 driveFor(float(dist))
