@@ -90,8 +90,9 @@ def expanding_square():
     xList = [0, 1500, 1500, 0, 0, 1200, 1200, 300, 300, 900, 900, 600, 600, 750, 750, 600]
     yList = [0, 0, 1500, 1500, 300, 300, 1200, 1200, 600, 600, 900, 900, 600, 600, 750, 750]
     for i in range(len(xList)):
-        mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
+        mdiff.on_to_coordinates(driveSpeed,xList[i], yList[i])
         sleep(1)
+        
 
 def sector():
     global onBorder
@@ -102,8 +103,9 @@ def sector():
     xList = [0, 1200, 750, 600, 0, 1500, 1200, 600, 0, 750, 900, 1500, 900, 300]
     yList = [0, 1200, 1500, 0, 600, 750, 0, 1500, 900, 750, 1500, 900, 0, 750]
     for i in range(len(xList)):
-        mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
+        mdiff.on_to_coordinates(driveSpeed,xList[i], yList[i])
         sleep(1)
+        
 
 
 def go_home():
@@ -117,12 +119,13 @@ def go_home():
     for i in range(len(xList)):
         mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
         sleep(1)
-
+        
 
 def snek():
     global onBorder
     global right
     global x
+    global chill
     while True:
         drive.on(driveSpeed,driveSpeed)
         print('x:'+str(x)+' y:'+str(y))
