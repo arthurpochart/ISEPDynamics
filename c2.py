@@ -1,21 +1,22 @@
 from ev3dev2.motor import MediumMotor, OUTPUT_C, OUTPUT_A, OUTPUT_B
 from time import sleep
-from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank, MoveDifferential, SpeedRPM
+from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank, MoveDifferent
+ial, SpeedRPM
 from ev3dev2.sensor.lego import ColorSensor
 from ev3dev2.sensor import INPUT_1
 from ev3dev2.led import Leds
 from ev3dev2.sensor.lego import GyroSensor, UltrasonicSensor, ColorSensor
-from threading import Thread
-from ev3dev2.wheel import EV3Tire,Wheel
+from threading import Thread, Event
+from ev3dev2.wheel import EV3Tire,Wheel,EV3EducationSetTire
 import os
-
-class OurTire(Wheel):
-
-    def __init__(self):
-        Wheel.__init__(self,56.0,28)
 
 
 print("System control: ")
+
+#Define multithreading events for communication
+stop_event = Event()
+detected_event = Event()
+
 
 drive = MoveTank(OUTPUT_A, OUTPUT_B)
 grabber = MediumMotor(OUTPUT_C)
@@ -29,16 +30,12 @@ driveSpeed=15
 wheelCirc = 5.6*3.14
 x = 0
 y = 0
-tire = OurTire()
-wheel = Wheel(56.0,28)
 onBorder = False
 right = True
 chill = False
-delta = 0
-nb_Turns = 9
-
-calibrationrot = 83
-mdiff = MoveDifferential(OUTPUT_A,OUTPUT_B,wheel,calibrationrot)
+detected = False
+calibrationrot = 100
+mdiff = MoveDifferential(OUTPUT_A,OUTPUT_B,EV3EducationSetTire,calibrationrot)
 mdiff.gyro = GyroSensor()
 mdiff.gyro.calibrate()
 
@@ -46,20 +43,56 @@ def driveFor(meters):
     rots = meters/wheelCirc
     drive.on_for_rotations(driveSpeed,driveSpeed,rots,brake=False)
 def open_claw():
-    grabber.on_for_degrees(speed=grabberSpeed,degrees=360*2.5)
+    grabber.on_for_degrees(speed=grabberSpeed,degrees=360*2.7)
 
 def close_claw():
-    grabber.on_for_degrees(speed=-grabberSpeed,degrees=360*2.5)
+    grabber.on_for_degrees(speed=-grabberSpeed,degrees=360*2.7)
 
 def checkBorder():
     global onBorder
     global chill
-    while True:
+    global detected
+    while not stop_event.is_set():
         color = colorSensor.color
+        dist = us.distance_centimeters
+        x = mdiff.x_pos_mm
+        y = mdiff.y_pos_mm
+        if int(dist) < 4:
+            detected = True
+            print("DETECTED at position X:"+str(round(x))+" Y:"+str(round(y)))
+            detected_event.set()
+            stop_event.wait()
         if chill == True:
             sleep(13)
         if color == 1:
             onBorder = True
+
+def killThread(thread):
+    thread_id = thread.ident
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, ctypes.py_object(SystemExit))
+    if res > 1:
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
+        print('Exception raise failure')
+
+def log():
+    while not stop_event.is_set():
+        x = mdiff.x_pos_mm
+        y = mdiff.y_pos_mm
+        print("X:"+str(round(x))+" Y:"+str(round(y)))
+        sleep(1)
+def controlThread():
+    global detected
+    while not stop_event.is_set():
+        detected_event.wait()
+        print("Killing Thread")
+        mdiff.off()
+        close_claw()
+        stop_event.set()
+        mdiff.on_to_coordinates(driveSpeed,0,0)
+        print("Going Home")
+        sleep(20)
+        open_claw()
+
 
 def turn_around_r():
     global y
@@ -79,53 +112,10 @@ def turn_around_l():
     drive.turn_left(driveSpeed,90-5)
     driveFor(5)
 
-
-
-def expanding_square():
+def snake():
     global onBorder
     global right
     global x
-    mdiff.gyro.calibrate()
-    mdiff.odometry_start(90, 0, 0, 0.005)
-    xList = [0, 1500, 1500, 0, 0, 1200, 1200, 300, 300, 900, 900, 600, 600, 750, 750, 600]
-    yList = [0, 0, 1500, 1500, 300, 300, 1200, 1200, 600, 600, 900, 900, 600, 600, 750, 750]
-    for i in range(len(xList)):
-        mdiff.on_to_coordinates(driveSpeed,xList[i], yList[i])
-        sleep(1)
-        
-
-def sector():
-    global onBorder
-    global right
-    global x
-    mdiff.gyro.calibrate()
-    mdiff.odometry_start(90, 0, 0, 0.005)
-    xList = [0, 1200, 750, 600, 0, 1500, 1200, 600, 0, 750, 900, 1500, 900, 300]
-    yList = [0, 1200, 1500, 0, 600, 750, 0, 1500, 900, 750, 1500, 900, 0, 750]
-    for i in range(len(xList)):
-        mdiff.on_to_coordinates(driveSpeed,xList[i], yList[i])
-        sleep(1)
-        
-
-
-def go_home():
-    global onBorder
-    global right
-    global x
-    mdiff.gyro.calibrate()
-    mdiff.odometry_start(90, 0, 0, 0.005)
-    xList = [0]
-    yList = [0]
-    for i in range(len(xList)):
-        mdiff.on_to_coordianates(driveSpeed,xList[i], yList[i])
-        sleep(1)
-        
-
-def snek():
-    global onBorder
-    global right
-    global x
-    global chill
     while True:
         drive.on(driveSpeed,driveSpeed)
         print('x:'+str(x)+' y:'+str(y))
@@ -151,23 +141,35 @@ def snek():
         else:
             continue
 
-def rando():
+def square():
     global onBorder
     global right
     global x
     mdiff.gyro.calibrate()
-    mdiff.odometry_start(theta_degrees_start=0)
-    mdiff.on_to_coordinates(driveSpeed,1000,0)
-    mdiff.turn_to_angle(driveSpeed,0,use_gyro=True)
-    mdiff.turn_to_angle(driveSpeed,90,use_gyro=True)
-    mdiff.turn_to_angle(driveSpeed,180,use_gyro=True)
-    mdiff.turn_to_angle(driveSpeed,270,use_gyro=True)
-    mdiff.turn_to_angle(driveSpeed,360,use_gyro=True)
+    mdiff.odometry_start(90,0,0,0.005)
+    xList = [0, 1500, 1500, 0, 0, 1200, 1200, 300, 300, 900, 900, 600, 600, 750, 750, 600]
+    yList = [0, 0, 1500, 1500, 300, 300, 1200, 1200, 600, 600, 900, 900, 600, 600, 750, 750]
+    for i in range(len(xList)):
+        mdiff.on_to_coordinates(driveSpeed,xList[i],yList[i])
+        sleep(1)
+
+def sector():
+    global onBorder
+    global right
+    global x
+    mdiff.gyro.calibrate()
+    mdiff.odometry_start(90, 0, 0, 0.005)
+    xList = [0, 1200, 750, 600, 0, 1500, 1200, 600, 0, 750, 900, 1500, 900, 300]
+    yList = [0, 1200, 1500, 0, 600, 750, 0, 1500, 900, 750, 1500, 900, 0, 750]
+    for i in range(len(xList)):
+        mdiff.on_to_coordinates(driveSpeed,xList[i], yList[i])
+        sleep(1)
 
 def menu():
+    global detected
     escape = False
     while escape==False:
-        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test 6.Expanding_square 7.Sector 8.Go_home\n")
+        direction = input("1.Right 2.Left 3.Open 4.Close 5.Test\n")
         if direction=='1':
             deg = input('Degrees:\n')
             drive.turn_right(driveSpeed,float(deg))
@@ -180,25 +182,15 @@ def menu():
             close_claw()
         elif direction=='5':
             p1=Thread(target=checkBorder)
-            p2=Thread(target=rando)
+            p2=Thread(target=square)
+            p3=Thread(target=controlThread)
+            p4=Thread(target=log)
+            p4.start()
             p1.start()
             p2.start()
-        elif direction=='6':
-            p1=Thread(target=checkBorder)
-            p2=Thread(target=expanding_square)
-            p1.start()
-            p2.start()
-        elif direction=='7':
-            p1=Thread(target=checkBorder)
-            p2=Thread(target=sector)
-            p1.start()
-            p2.start()
-        elif direction=='8':
-            p1=Thread(target=checkBorder)
-            p2=Thread(target=go_home)
-            p1.start()
-            p2.start()    
-        elif direction == '9':
+            p3.start()
+            sleep(1)
+        elif direction == '6':
             try:
                 dist = input("\n")
                 driveFor(float(dist))
